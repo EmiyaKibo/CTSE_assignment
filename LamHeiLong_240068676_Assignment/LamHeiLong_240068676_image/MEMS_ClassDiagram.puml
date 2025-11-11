@@ -1,0 +1,230 @@
+@startuml MEMS_Class_Diagram
+
+' ===== Main Application =====
+class MEMS {
+}
+
+' ===== Domain Classes =====
+abstract class Ensemble {
+}
+
+class OrchestraEnsemble {
+}
+
+class JazzBandEnsemble {
+}
+
+class Musician {
+}
+
+class EnsembleMemento {
+}
+
+' ===== Command Pattern =====
+interface Command <<interface>> {
+}
+
+class AddMusicianCommand {
+}
+
+class DeleteMusicianCommand {
+}
+
+class ModifyMusicianInstrumentCommand {
+}
+
+class CreateEnsembleCommand {
+}
+
+class ChangeEnsembleNameCommand {
+}
+
+class SwitchEnsembleCommand {
+}
+
+class ShowEnsembleCommand {
+}
+
+class ListEnsemblesCommand {
+}
+
+class HelpCommand {
+}
+
+class ExitCommand {
+}
+
+class UndoCommand {
+}
+
+class RedoCommand {
+}
+
+class ListHistoryCommand {
+}
+
+class CommandEntry {
+}
+
+' ===== Factory Pattern =====
+interface CommandFactory <<interface>> {
+}
+
+class AddMusicianCommandFactory {
+}
+
+class DeleteMusicianCommandFactory {
+}
+
+class ModifyMusicianInstrumentCommandFactory {
+}
+
+class CreateEnsembleCommandFactory {
+}
+
+class ChangeEnsembleNameCommandFactory {
+}
+
+class SwitchEnsembleCommandFactory {
+}
+
+class ShowEnsembleCommandFactory {
+}
+
+class ListEnsemblesCommandFactory {
+}
+
+class HelpCommandFactory {
+}
+
+class ExitCommandFactory {
+}
+
+class UndoCommandFactory {
+}
+
+class RedoCommandFactory {
+}
+
+class ListHistoryCommandFactory {
+}
+
+interface EnsembleFactory <<interface>> {
+}
+
+class OrchestraEnsembleFactory {
+}
+
+class JazzBandEnsembleFactory {
+}
+
+interface MusicianFactory <<interface>> {
+}
+
+class OrchestraMusicianFactory {
+}
+
+class JazzBandMusicianFactory {
+}
+
+' ===== Registry/Manager Classes =====
+class FactoryRegistry {
+}
+
+class HistoryManager {
+}
+
+' ===== Relationships =====
+
+' Inheritance - Command implementations
+Command <|.. AddMusicianCommand
+Command <|.. DeleteMusicianCommand
+Command <|.. ModifyMusicianInstrumentCommand
+Command <|.. CreateEnsembleCommand
+Command <|.. ChangeEnsembleNameCommand
+Command <|.. SwitchEnsembleCommand
+Command <|.. ShowEnsembleCommand
+Command <|.. ListEnsemblesCommand
+Command <|.. HelpCommand
+Command <|.. ExitCommand
+Command <|.. UndoCommand
+Command <|.. RedoCommand
+Command <|.. ListHistoryCommand
+
+' Inheritance - CommandFactory implementations
+CommandFactory <|.. AddMusicianCommandFactory
+CommandFactory <|.. DeleteMusicianCommandFactory
+CommandFactory <|.. ModifyMusicianInstrumentCommandFactory
+CommandFactory <|.. CreateEnsembleCommandFactory
+CommandFactory <|.. ChangeEnsembleNameCommandFactory
+CommandFactory <|.. SwitchEnsembleCommandFactory
+CommandFactory <|.. ShowEnsembleCommandFactory
+CommandFactory <|.. ListEnsemblesCommandFactory
+CommandFactory <|.. HelpCommandFactory
+CommandFactory <|.. ExitCommandFactory
+CommandFactory <|.. UndoCommandFactory
+CommandFactory <|.. RedoCommandFactory
+CommandFactory <|.. ListHistoryCommandFactory
+
+' Inheritance - Ensemble hierarchy
+Ensemble <|-- OrchestraEnsemble
+Ensemble <|-- JazzBandEnsemble
+
+' Inheritance - EnsembleFactory implementations
+EnsembleFactory <|.. OrchestraEnsembleFactory
+EnsembleFactory <|.. JazzBandEnsembleFactory
+
+' Inheritance - MusicianFactory implementations
+MusicianFactory <|.. OrchestraMusicianFactory
+MusicianFactory <|.. JazzBandMusicianFactory
+
+' Composition - MEMS components
+MEMS *-- FactoryRegistry
+MEMS *-- HistoryManager
+MEMS o-- CommandEntry
+
+' Association - MEMS to domain
+MEMS o-- Ensemble
+MEMS o-- Musician
+
+' Association - Ensemble and Musician
+Ensemble o-- Musician
+
+' Association - Ensemble and Memento
+Ensemble ..> EnsembleMemento : <<creates>>
+
+' Association - FactoryRegistry contains factories
+FactoryRegistry o-- EnsembleFactory
+FactoryRegistry o-- MusicianFactory
+FactoryRegistry o-- CommandFactory
+
+' Association - HistoryManager manages commands
+HistoryManager o-- Command
+
+' Association - CommandEntry uses CommandFactory
+CommandEntry o-- CommandFactory
+
+' Dependency - Factories create products
+CommandFactory ..> Command : <<creates>>
+EnsembleFactory ..> Ensemble : <<creates>>
+MusicianFactory ..> Musician : <<creates>>
+
+' Dependency - Commands use domain objects
+AddMusicianCommand ..> Ensemble
+AddMusicianCommand ..> Musician
+AddMusicianCommand ..> MusicianFactory
+DeleteMusicianCommand ..> Ensemble
+DeleteMusicianCommand ..> Musician
+ModifyMusicianInstrumentCommand ..> Ensemble
+ModifyMusicianInstrumentCommand ..> Musician
+CreateEnsembleCommand ..> Ensemble
+CreateEnsembleCommand ..> EnsembleFactory
+ChangeEnsembleNameCommand ..> Ensemble
+SwitchEnsembleCommand ..> Ensemble
+ShowEnsembleCommand ..> Ensemble
+ListEnsemblesCommand ..> Ensemble
+UndoCommand ..> HistoryManager
+RedoCommand ..> HistoryManager
+ListHistoryCommand ..> HistoryManager
+
+@enduml

@@ -1,0 +1,74 @@
+c
+o
+E001
+Symphony Orchestra
+a
+m001, Ludwig van Beethoven
+1
+a
+m002, Yo-Yo Ma
+2
+se
+c
+j
+E200
+Modern Jazz Quartet
+a
+m201, Oscar Peterson
+1
+a
+m202, Charlie Parker
+2
+a
+m203, Max Roach
+3
+se
+sa
+s
+E001
+a
+m003, Itzhak Perlman
+1
+se
+m
+m001
+2
+se
+l
+u
+se
+u
+se
+u
+s
+E200
+se
+u
+se
+l
+r
+se
+r
+se
+s
+E001
+se
+d
+m002
+se
+cn
+Vienna Philharmonic
+se
+l
+u
+se
+u
+se
+s
+E200
+cn
+Blue Note All-Stars
+se
+sa
+l
+

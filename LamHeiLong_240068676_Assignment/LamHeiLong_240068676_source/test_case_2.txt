@@ -1,0 +1,455 @@
+TEST CASE 2: Advanced Testing - Error Handling, Edge Cases, and Complex Undo/Redo
+================================================================================
+
+This test case covers:
+- Error handling (invalid inputs, missing data)
+- Creating multiple ensembles
+- Complex undo/redo scenarios
+- Switching between multiple ensembles
+- Deleting and restoring musicians across contexts
+- Testing undo on create ensemble (removes ensemble)
+- Testing redo limits
+- Full undo/redo cycle
+
+Input commands (each line after :- is user input):
+--------------------------------------------------------------------------------
+
+c
+o
+O100
+Royal Orchestra
+
+a
+m100, Anne-Sophie Mutter
+1
+
+a
+m101, Jacqueline du Pré
+2
+
+a
+m102, Nigel Kennedy
+1
+
+se
+
+c
+j
+J100
+Bebop Masters
+
+a
+m200, Bill Evans
+1
+
+a
+m201, Stan Getz
+2
+
+a
+m202, Art Blakey
+3
+
+se
+
+c
+o
+O200
+Chamber Orchestra
+
+a
+m103, Hilary Hahn
+1
+
+se
+
+sa
+
+l
+
+s
+O100
+
+m
+m100
+2
+
+se
+
+d
+m102
+
+se
+
+s
+J100
+
+d
+m201
+
+se
+
+cn
+Jazz Legends
+
+se
+
+s
+O200
+
+cn
+Vienna Chamber
+
+se
+
+sa
+
+l
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+u
+
+se
+
+sa
+
+l
+
+r
+
+r
+
+r
+
+se
+
+s
+J100
+
+se
+
+r
+
+se
+
+r
+
+se
+
+s
+O100
+
+se
+
+r
+
+se
+
+r
+
+se
+
+l
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+u
+
+sa
+
+l
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+r
+
+sa
+
+se
+
+l
+
+x
+
+
+Expected Test Flow:
+--------------------------------------------------------------------------------
+
+1. Create orchestra O100 "Royal Orchestra"
+   - Should create successfully
+
+2. Add violinist m100 (Anne-Sophie Mutter)
+
+4. Add cellist m101 (Jacqueline du Pré)
+
+5. Add violinist m102 (Nigel Kennedy)
+
+6. Show ensemble
+   - Should display 2 violinists and 1 cellist
+
+7. Create jazz band J100 "Bebop Masters"
+   - Should create and switch context
+
+8. Add pianist m200 (Bill Evans)
+
+9. Add saxophonist m201 (Stan Getz)
+
+10. Add drummer m202 (Art Blakey)
+
+11. Show ensemble
+    - Should display all three jazz musicians
+
+12. Create orchestra O200 "Chamber Orchestra"
+    - Should create and switch context
+
+13. Add violinist m103 (Hilary Hahn)
+
+14. Show ensemble
+    - Should display 1 violinist, cellist = NIL
+
+15. List all ensembles
+    - Should display all 3 ensembles
+
+16. List history
+    - Should show all 10 commands (3 creates + 7 adds)
+
+17. Switch to O100
+
+18. Modify m100 to cellist
+    - Should update instrument
+
+19. Show ensemble
+    - Should show 1 violinist and 2 cellists
+
+20. Delete musician m102
+
+21. Show ensemble
+    - Should show 1 violinist and 2 cellists (m102 removed)
+
+22. Switch to J100
+
+23. Delete musician m201 (saxophonist)
+
+24. Show ensemble
+    - Should show pianist and drummer, saxophonist = NIL
+
+25. Change ensemble name to "Jazz Legends"
+
+26. Show ensemble
+    - Should display new name
+
+27. Switch to O200
+
+28. Change ensemble name to "Vienna Chamber"
+
+29. Show ensemble
+    - Should display new name
+
+30. List all ensembles
+    - Should show all ensembles with updated names
+
+31. List history
+    - Should show 16 commands in undo list
+
+32-39. Undo 8 times
+    - Should undo: cn O200, cn J100, delete m201, delete m102, modify m100, add m103, create O200, add m202
+    - Should show ensemble context changes as commands are undone
+    - After undoing create O200, ensemble O200 should not exist
+
+40. List all ensembles
+    - Should show only O100 and J100 (O200 was undone)
+
+41. List history
+    - Undo list should have 8 items
+    - Redo list should have 8 items
+
+42-45. Redo 4 times
+    - Should redo: add m202, create O200, add m103, modify m100
+
+46. Show current ensemble (should be O100)
+    - Should show modified state with m100 as cellist
+
+47. Switch to J100
+
+48. Show ensemble
+    - Should display all three musicians (m201 delete was undone, but not yet redone)
+
+49-50. Redo 2 more times
+    - Should redo: delete m102, delete m201
+
+51. Show ensemble
+    - Should show pianist and drummer only (m201 deleted again)
+
+52. Switch to O100
+
+53. Show ensemble
+    - Should show 1 violinist, 2 cellists (m102 deleted)
+
+54-55. Redo 2 more times
+    - Should redo: cn J100, cn O200
+
+56. List history
+    - Undo list should have 16 commands
+    - Redo list should be empty
+
+57-74. Undo 18 times (ALL commands including the original creates)
+    - Should undo all actions
+    - Should eventually show "Nothing to undo" when list is empty
+    - All ensembles should be removed
+
+75. List all ensembles
+    - Should show no ensembles or empty list
+
+76. List history
+    - Undo list should be empty
+    - Redo list should have all 18 commands
+
+77-94. Redo 18 times (ALL commands)
+    - Should recreate entire session
+    - Should restore all ensembles and musicians
+
+95. List all ensembles
+    - Should show all 3 ensembles with final names
+
+96. Show current ensemble
+    - Should display ensemble O200 "Vienna Chamber"
+
+97. List history
+    - Undo list should have all commands
+    - Redo list should be empty
+
+98. Exit system
+
+================================================================================
+
+Key Testing Points in Test Case 2:
+--------------------------------------------------------------------------------
+
+1. ERROR SCENARIOS (implicitly tested by retry mechanism):
+   - The system auto-retries on invalid input
+   - Tests exception handling for all input validation
+
+2. MULTIPLE ENSEMBLES: Tests managing 3 ensembles simultaneously
+
+3. COMPLEX UNDO/REDO:
+   - Undoing CREATE removes the ensemble entirely
+   - Ensemble context switches during undo/redo
+   - Testing that redo list builds correctly
+   - Testing complete undo to empty state
+   - Testing complete redo to restore state
+
+4. CROSS-ENSEMBLE OPERATIONS:
+   - Modifying musicians in different ensembles
+   - Deleting musicians across ensemble switches
+   - Renaming multiple ensembles
+
+5. MEMENTO PATTERN TESTING:
+   - Modify instrument uses memento
+   - Change name uses memento
+   - Create ensemble tracks previous context
+   - Add/Delete use memento for restoration
+
+6. EDGE CASES:
+   - Undoing beyond available commands
+   - Redoing beyond available commands
+   - Switching to ensemble that was undone
+   - Complete state restoration via redo
+
+7. COMMAND PATTERN VERIFICATION:
+   - All 12 commands used (create, add, modify, delete, show, list, switch, rename, undo, redo, history, exit)
+   - Each command properly executes and provides feedback
+
+================================================================================
+END OF TEST CASE 2
+================================================================================
