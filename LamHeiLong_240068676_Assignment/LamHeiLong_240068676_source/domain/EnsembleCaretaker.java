@@ -1,25 +1,34 @@
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Stack;
 
 public class EnsembleCaretaker 
 {
-
+    private static Stack<EnsembleMemento> mementoStack = new Stack<EnsembleMemento>();
     // Memento pattern methods - for undo/redo functionality
 	// Save current state
-	public static EnsembleMemento createMemento(Iterator<Musician> musicians, String eName)
+	public static void createMemento(String Id, Iterator<Musician> musicians, String eName)
 	{
-		return new EnsembleMemento(musicians, eName);
+		mementoStack.push(new EnsembleMemento(Id, musicians, eName));
 	}
 	
 	// Restore previous state
-	public static void restoreMemento(Ensemble ensemble, EnsembleMemento memento)
+	public static void restoreMemento()
     {
         // Clear current musicians and restore from memento
         // This replaces the current state with the saved state
         // Note: We assume Ensemble has methods to clear and add musicians
         
-        // First, collect all current musicians into a list to avoid ConcurrentModificationException
+        //Get the latest memento
+        EnsembleMemento memento = mementoStack.pop();
+
+        //Get the Ensemble related to the latest memento
+        Map<String, Ensemble> ensembles = MEMS.getEnsembles();
+        Ensemble ensembleToRestore = ensembles.get(memento.getEID()); 
+
+        //collect all current musicians into a list to avoid ConcurrentModificationException
         java.util.List<Musician> currentMusicians = new java.util.ArrayList<>();
-        Iterator<Musician> it = ensemble.getMusicians();
+        Iterator<Musician> it = ensembleToRestore.getMusicians();
         while (it.hasNext())
         {
             currentMusicians.add(it.next());
@@ -28,14 +37,15 @@ public class EnsembleCaretaker
         // Now remove them (won't throw ConcurrentModificationException)
         for (Musician m : currentMusicians)
         {
-            ensemble.dropMusician(m);
+            ensembleToRestore.dropMusician(m);
         }
         
         // Restore musicians from memento
         for (Musician m : memento.getMusicians())
         {
-            ensemble.addMusician(m);
+            ensembleToRestore.addMusician(m);
         }
-        ensemble.setName(memento.getName());
+        ensembleToRestore.setName(memento.getName());
+        MEMS.setCurrentEnsembleId(memento.getEID());
     } 
 }

@@ -5,8 +5,6 @@ public class ChangeEnsembleNameCommand implements Command
 {
 	private String ensembleId;
 	private String newName;
-	private EnsembleMemento memento;
-	private String previousEnsembleId;
 	
 	public ChangeEnsembleNameCommand()
 	{
@@ -34,8 +32,7 @@ public class ChangeEnsembleNameCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 		
-		this.memento = EnsembleCaretaker.createMemento(ensemble.getMusicians(), ensemble.getName());
-		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
 		ensemble.setName(newName);
 		System.out.println("Ensemble's name is updated.");
 		return true;
@@ -43,14 +40,7 @@ public class ChangeEnsembleNameCommand implements Command
 	
 	public boolean undo()
 	{
-		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		
-		Ensemble ensemble = ensembles.get(ensembleId);
-		EnsembleCaretaker.restoreMemento(ensemble, memento);
-		
-		// Restore current ensemble context
-		MEMS.setCurrentEnsembleId(previousEnsembleId);
-		
+		EnsembleCaretaker.restoreMemento();
 		return true;
 	}
 	

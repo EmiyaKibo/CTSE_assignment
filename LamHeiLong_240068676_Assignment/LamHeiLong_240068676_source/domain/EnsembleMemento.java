@@ -11,12 +11,13 @@ import java.util.Vector;
  */
 public class EnsembleMemento
 {
+	private String eID;					//saved ensemble ID
 	private List<Musician> musicians;  // Saved list of musicians
 	private String name;                // Saved ensemble name
 	
 	// Constructor - saves the current state
 	// Makes a DEEP COPY of musicians so changes don't affect the saved state
-	public EnsembleMemento(Iterator<Musician> musicians, String name)
+	public EnsembleMemento(String Id, Iterator<Musician> musicians, String name)
 	{
 		// Create a new list and copy each musician
 		// This is important! If we just copy the list reference, changes would affect our saved state
@@ -30,9 +31,11 @@ public class EnsembleMemento
 			this.musicians.add(copy); // Add the copied musician to our saved list
 		}
 		this.name = name;
+		this.eID = Id;
 	}
 	
 	// Getter methods to retrieve saved state
 	public List<Musician> getMusicians() { return musicians; }
 	public String getName() { return name; }
+	public String getEID() {return eID;}
 }

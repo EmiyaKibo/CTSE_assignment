@@ -6,7 +6,6 @@ public class DeleteMusicianCommand implements Command
 {
 	private String musicianId;
 	private String ensembleId;
-	private EnsembleMemento memento;
 	private String previousEnsembleId;
 	
 	public DeleteMusicianCommand()
@@ -36,7 +35,7 @@ public class DeleteMusicianCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 		
-		this.memento = EnsembleCaretaker.createMemento(ensemble.getMusicians(), ensemble.getName());
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
 		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
 		Musician musician = musicians.get(musicianId);
 		if (musician != null)
@@ -55,7 +54,7 @@ public class DeleteMusicianCommand implements Command
 		Map<String, Musician> musicians = MEMS.getMusicians();
 		
 		Ensemble ensemble = ensembles.get(ensembleId);
-		EnsembleCaretaker.restoreMemento(ensemble, memento);
+		EnsembleCaretaker.restoreMemento();
 		// Re-register musician
 		Iterator<Musician> it = ensemble.getMusicians();
 		while (it.hasNext())

@@ -4,7 +4,6 @@ import java.util.Scanner;
 public class ModifyMusicianInstrumentCommand implements Command
 {
 	private String ensembleId;
-	private EnsembleMemento memento;
 	private String previousEnsembleId;
 	
 	public ModifyMusicianInstrumentCommand()
@@ -32,7 +31,7 @@ public class ModifyMusicianInstrumentCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 		
-		this.memento = EnsembleCaretaker.createMemento(ensemble.getMusicians(), ensemble.getName());
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
 		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
 
 		ensemble.updateMusicianRole();
@@ -41,10 +40,7 @@ public class ModifyMusicianInstrumentCommand implements Command
 	
 	public boolean undo()
 	{
-		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		
-		Ensemble ensemble = ensembles.get(ensembleId);
-		EnsembleCaretaker.restoreMemento(ensemble, memento);
+		EnsembleCaretaker.restoreMemento();
 		
 		// Restore current ensemble context
 		MEMS.setCurrentEnsembleId(previousEnsembleId);

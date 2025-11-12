@@ -25,8 +25,10 @@ public class SwitchEnsembleCommand implements Command
 	public boolean execute()
 	{
 		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		
-		Ensemble ensemble = ensembles.get(ensembleId);
+		Ensemble ensemble = ensembles.get(MEMS.getCurrentEnsembleId());
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
+		ensemble = ensembles.get(ensembleId);
+
 		if (ensemble == null)
 		{
 			System.out.println("Ensemble " + ensembleId + " is not found!!");
@@ -38,8 +40,8 @@ public class SwitchEnsembleCommand implements Command
 	
 	public boolean undo()
 	{
-		// Non-undoable command
-		return false;
+		EnsembleCaretaker.restoreMemento();
+		return true;
 	}
 	
 	public String getDescription()

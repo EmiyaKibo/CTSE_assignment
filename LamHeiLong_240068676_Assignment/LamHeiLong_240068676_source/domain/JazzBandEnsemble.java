@@ -34,20 +34,17 @@ public class JazzBandEnsemble extends Ensemble
 		System.out.print("Please input musician ID:- ");
 		musicianId = scanner.nextLine().trim();
 		if (musicianId.isEmpty()) {
-			scanner.close();
 			throw new IllegalArgumentException("Musician ID cannot be empty");
 		}
 		
 		Musician m = MEMS.getMusicians().get(musicianId);
 		if( m == null ) {
-			scanner.close();
 			throw new IllegalArgumentException("Musician with ID " + musicianId + " does not exist");
 		}
 
 		System.out.print("Instrument (1 = pianist | 2 = saxophonist | 3 = drummer ):- ");
 		String roleInput = scanner.nextLine().trim();
 		if (roleInput.isEmpty()) {
-			scanner.close();
 			throw new IllegalArgumentException("Instrument selection cannot be empty");
 		}
 		newRole = Integer.parseInt(roleInput);

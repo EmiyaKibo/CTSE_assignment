@@ -5,9 +5,7 @@ public class AddMusicianCommand implements Command
 {
 	private Musician musician;
 	private String ensembleId;
-	private EnsembleMemento memento;
 	private String roleName;
-	private String previousEnsembleId;  // Track the ensemble this command was executed in
 	
 	public AddMusicianCommand()
 	{
@@ -76,8 +74,8 @@ public class AddMusicianCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 		
-		this.memento = EnsembleCaretaker.createMemento(ensemble.getMusicians(), ensemble.getName());
-		this.previousEnsembleId = MEMS.getCurrentEnsembleId();  // Save current ensemble
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
+
 		ensemble.addMusician(musician);
 		musicians.put(musician.getMID(), musician);
 		System.out.println("Musician is added.");
@@ -86,15 +84,10 @@ public class AddMusicianCommand implements Command
 	
 	public boolean undo()
 	{
-		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
 		Map<String, Musician> musicians = MEMS.getMusicians();
 		
-		Ensemble ensemble = ensembles.get(ensembleId);
-		EnsembleCaretaker.restoreMemento(ensemble, memento);
+		EnsembleCaretaker.restoreMemento();
 		musicians.remove(musician.getMID());
-		
-		// Restore current ensemble context
-		MEMS.setCurrentEnsembleId(previousEnsembleId);
 		
 		return true;
 	}
