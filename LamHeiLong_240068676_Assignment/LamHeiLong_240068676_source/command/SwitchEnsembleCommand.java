@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 /**
  * SwitchEnsembleCommand - switches the current active ensemble
- * This is a non-undoable command (doesn't go in history)
  */
 public class SwitchEnsembleCommand implements Command
 {

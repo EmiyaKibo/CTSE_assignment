@@ -42,6 +42,21 @@ public class OrchestraEnsemble extends Ensemble
 			throw new IllegalArgumentException("Musician with ID " + musicianId + " does not exist");
 		}
 
+		int currentRole = m.getRole();
+		if(currentRole == VIOLINIST_ROLE || currentRole == CELLIST_ROLE)
+		{
+			String roleName = "";
+			switch (currentRole) 
+			{
+				case VIOLINIST_ROLE:
+					roleName = "violinist";
+					break;
+				case CELLIST_ROLE:
+					roleName = "cellist";
+					break;
+			}
+			MusicianCaretaker.createMemento(m, roleName);
+		}
 		System.out.print("Instrument (1 = violinist | 2 = cellist ):- ");
 		String roleInput = scanner.nextLine().trim();
 		if (roleInput.isEmpty()) {
