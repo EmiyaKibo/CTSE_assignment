@@ -121,6 +121,7 @@ public class MEMS
 		{
 			displayPrompt();
 			String command = scanner.nextLine().trim();
+			System.out.println();
 			if (!processCommand(command))
 			{
 				System.out.println("Goodbye!");
@@ -134,6 +135,7 @@ public class MEMS
 	private void displayPrompt()
 	{
 		System.out.println();
+		showHelpMenu();
 		if (currentEnsembleId != null)
 		{
 			Ensemble ensemble = ensembles.get(currentEnsembleId);
@@ -142,19 +144,22 @@ public class MEMS
 				System.out.println("The current ensemble is " + ensemble.getEnsembleID() + " " + ensemble.getName() + ".");
 			}
 		}
-		showHelpMenu();
 		System.out.print("Please enter command [ c | s | a | m | d | se | sa | cn | u | r | l | x ] :- ");
 	}
 	
 	// Show help - displays all available commands
 	public static void showHelpMenu()
 	{
+		System.out.println("============================================");
+		System.out.println("Available commands:");
 		for (CommandEntry entry : instance.availableCommands)
 		{
 			String aliases = entry.getAliasesFormatted();
 			String desc = entry.getDescription();
 			System.out.println(aliases + " = " + desc + ", ");
 		}
+		System.out.println("============================================");
+		System.out.println();
 	}
 	
 	private boolean processCommand(String commandInput)
@@ -174,13 +179,13 @@ public class MEMS
 			return true;
 		}
 		
-		// ALL commands use Command pattern now
+		// ALL commands use Command pattern
 		// Retry loop - automatically retries on error
 		boolean success = false;
 		while (!success) {
 			try {
 				// Create the command using factory
-				Command command = createCommand(matchedEntry.getCommandFactory());
+				Command command = matchedEntry.getCommandFactory().createCommand();
 				
 				// Read input
 				command.readInput(scanner);
@@ -232,13 +237,6 @@ public class MEMS
 			}
 		}
 		return null;  // No match found
-	}
-	
-	// Create a command object using the factory
-	// OCP compliant: All factories use same signature, no instanceof checks needed
-	private Command createCommand(CommandFactory factory)
-	{
-		return factory.createCommand();
 	}
 	
 	public static void main(String[] args)

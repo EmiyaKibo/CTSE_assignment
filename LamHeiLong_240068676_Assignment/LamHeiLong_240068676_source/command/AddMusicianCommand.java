@@ -84,11 +84,7 @@ public class AddMusicianCommand implements Command
 	
 	public boolean undo()
 	{
-		Map<String, Musician> musicians = MEMS.getMusicians();
-		
-		EnsembleCaretaker.restoreMemento();
-		musicians.remove(musician.getMID());
-		
+		EnsembleCaretaker.restoreMemento();		
 		return true;
 	}
 	

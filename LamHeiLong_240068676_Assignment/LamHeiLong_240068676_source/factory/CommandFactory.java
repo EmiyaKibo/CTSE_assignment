@@ -1,4 +1,4 @@
 public interface CommandFactory
 {
-	Command createCommand();
+	public Command createCommand();
 }

@@ -12,8 +12,8 @@ import java.util.Scanner;
  */
 public interface Command
 {
-	void readInput(Scanner scanner);  // Read user input for this command
-	boolean execute();                // Do the operation
-	boolean undo();                   // Reverse the operation
-	String getDescription();          // Get a description for display
+	public void readInput(Scanner scanner);  // Read user input for this command
+	public boolean execute();                // Do the operation
+	public boolean undo();                   // Reverse the operation
+	public String getDescription();          // Get a description for display
 }

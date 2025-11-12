@@ -29,6 +29,7 @@ public class CommandEntry
 	}
 	
 	// Check if user input matches any of this command's aliases
+	// Currently only single alias is used, but this supports multiple aliases for future flexibility
 	public boolean matches(String input)
 	{
 		for (String alias : aliases)
@@ -42,6 +43,7 @@ public class CommandEntry
 	}
 	
 	// Get formatted aliases for display (e.g., "h/help/?")
+	// Not used for now, but could be useful for if aliases is implemented later
 	public String getAliasesFormatted()
 	{
 		return String.join("/", aliases);

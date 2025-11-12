@@ -15,23 +15,7 @@ public class CreateEnsembleCommand implements Command
 	private String name;                        // Name for the new ensemble (set by readInput)
 	private String ensembleType;                // Type name for description (set by readInput)
 	private Ensemble ensemble;                  // The created ensemble (saved for undo)
-	private CreateEnsembleMemento memento;      // Memento to save state before creation
-	
-	// Inner class - Memento to capture state before ensemble creation
-	private static class CreateEnsembleMemento
-	{
-		private String previousCurrentEnsembleId;
-		
-		public CreateEnsembleMemento(String previousCurrentEnsembleId)
-		{
-			this.previousCurrentEnsembleId = previousCurrentEnsembleId;
-		}
-		
-		public String getPreviousCurrentEnsembleId()
-		{
-			return previousCurrentEnsembleId;
-		}
-	}
+	private String currentEnsembleId;         	// Previous current ensemble ID (saved for undo)
 	
 	// Constructor - no parameters (gets dependencies via static MEMS accessors)
 	public CreateEnsembleCommand()
@@ -75,8 +59,8 @@ public class CreateEnsembleCommand implements Command
 	{
 		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
 		
-		// Create memento to save current state before making changes
-		this.memento = new CreateEnsembleMemento(MEMS.getCurrentEnsembleId());
+		// Save current state via memento before making changes
+		this.currentEnsembleId = MEMS.getCurrentEnsembleId();
 		
 		this.ensemble = factory.createEnsemble(ensembleId);
 		ensemble.setName(name);
@@ -95,9 +79,8 @@ public class CreateEnsembleCommand implements Command
 		// Remove the created ensemble
 		ensembles.remove(ensembleId);
 		
-		// Restore state from memento
-		String previousEnsembleId = memento.getPreviousCurrentEnsembleId();
-		MEMS.setCurrentEnsembleId(previousEnsembleId);
+		// Restore previous current ensemble
+		MEMS.setCurrentEnsembleId(currentEnsembleId);
 		
 		return true;
 	}

@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -6,8 +5,7 @@ public class DeleteMusicianCommand implements Command
 {
 	private String musicianId;
 	private String ensembleId;
-	private String previousEnsembleId;
-	
+
 	public DeleteMusicianCommand()
 	{
 	}
@@ -36,7 +34,6 @@ public class DeleteMusicianCommand implements Command
 		}
 		
 		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
-		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
 		Musician musician = musicians.get(musicianId);
 		if (musician != null)
 		{
@@ -50,26 +47,7 @@ public class DeleteMusicianCommand implements Command
 	
 	public boolean undo()
 	{
-		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		Map<String, Musician> musicians = MEMS.getMusicians();
-		
-		Ensemble ensemble = ensembles.get(ensembleId);
 		EnsembleCaretaker.restoreMemento();
-		// Re-register musician
-		Iterator<Musician> it = ensemble.getMusicians();
-		while (it.hasNext())
-		{
-			Musician m = it.next();
-			if (m.getMID().equals(musicianId))
-			{
-				musicians.put(musicianId, m);
-				break;
-			}
-		}
-		
-		// Restore current ensemble context
-		MEMS.setCurrentEnsembleId(previousEnsembleId);
-		
 		return true;
 	}
 	
