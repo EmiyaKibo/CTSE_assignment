@@ -2,7 +2,7 @@
 REM Simple run script - compiles and runs MEMS
 
 echo Compiling MEMS...
-javac -d bin domain/*.java factory/*.java command/*.java registry/HistoryManager.java registry/FactoryRegistry.java MEMS.java
+javac -d bin domain/*.java factory/*.java command/*.java registry/*.java Memento/*.java MEMS.java
 
 if %ERRORLEVEL% EQU 0 (
     echo.
