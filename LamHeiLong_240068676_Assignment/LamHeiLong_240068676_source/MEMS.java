@@ -42,9 +42,7 @@ public class MEMS
 	private HistoryManager historyManager;          // Handles undo/redo
 	private Scanner scanner;                        // For user input
 	private List<CommandEntry> availableCommands;   // List of all available commands
-	private Musician lastModifiedMusician;			// Last modified musician for description
-	private String lastModifiedRoleName;			// Last modified role name for description
-	
+		
 	// Static instance for command access (supports OCP by avoiding parameter passing)
 	private static MEMS instance;
 	
@@ -57,9 +55,6 @@ public class MEMS
 	public static FactoryRegistry getFactoryRegistry() { return instance.factoryRegistry; }
 	public static HistoryManager getHistoryManager() { return instance.historyManager; }
 	public static Scanner getScanner() { return instance.scanner; }
-	public static Musician getLastModifiedMusician() { return instance.lastModifiedMusician; }
-	public static String getLastModifiedRoleName() { return instance.lastModifiedRoleName; }
-	public static void setLastModifiedMusician(Musician musician, String roleName) { instance.lastModifiedMusician = musician; instance.lastModifiedRoleName = roleName; }
 	
 	// Constructor - initializes all components
 	public MEMS()
@@ -72,7 +67,6 @@ public class MEMS
 		this.historyManager = new HistoryManager();
 		this.scanner = new Scanner(System.in);
 		this.availableCommands = new ArrayList<>();
-		this.lastModifiedMusician = null;
 		
 		// Initialize the command list
 		initializeCommands();

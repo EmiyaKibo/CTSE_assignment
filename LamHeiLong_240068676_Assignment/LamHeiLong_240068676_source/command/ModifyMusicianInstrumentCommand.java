@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class ModifyMusicianInstrumentCommand implements Command
 {
 	private String ensembleId;
-	private String previousEnsembleId;
+	private MusicianMemento memento;	// Memento of the last modified musician, use for description
 	
 	public ModifyMusicianInstrumentCommand()
 	{
@@ -32,26 +32,22 @@ public class ModifyMusicianInstrumentCommand implements Command
 		}
 		
 		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
-		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
 
 		ensemble.updateMusicianRole();
+		this.memento = MusicianCaretaker.popMemento();
+
 		return true;
 	}
 	
 	public boolean undo()
 	{
 		EnsembleCaretaker.restoreMemento();
-		
-		// Restore current ensemble context
-		MEMS.setCurrentEnsembleId(previousEnsembleId);
-		
 		return true;
 	}
 	
 	public String getDescription()
 	{
-		String musicianId = MEMS.getLastModifiedMusician().getMID();
-		String roleName = MEMS.getLastModifiedRoleName();
-		return String.format("Modify musician's instrument, %s, %s", musicianId, roleName);
+
+		return String.format("Modify musician's instrument, %s, %s", memento.getMID(), memento.getRoleName());
 	}
 }

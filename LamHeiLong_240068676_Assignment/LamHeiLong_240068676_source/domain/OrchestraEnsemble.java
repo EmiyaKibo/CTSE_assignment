@@ -53,18 +53,7 @@ public class OrchestraEnsemble extends Ensemble
 		if (newRole == VIOLINIST_ROLE || newRole == CELLIST_ROLE)
 		{
 			m.setRole(newRole);
-			String roleName = "";
-			switch (newRole) 
-			{
-				case VIOLINIST_ROLE:
-					roleName = "violinist";
-					break;
-				case CELLIST_ROLE:
-					roleName = "cellist";
-					break;
-			}
 			System.out.println("Instrument is updated.");
-			MEMS.setLastModifiedMusician(m, roleName);
 		}
 		else
 		{

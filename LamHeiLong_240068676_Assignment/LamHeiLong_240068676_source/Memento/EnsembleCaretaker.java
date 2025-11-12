@@ -46,6 +46,8 @@ public class EnsembleCaretaker
             ensembleToRestore.addMusician(m);
         }
         ensembleToRestore.setName(memento.getName());
+
+        // Restore the current ensemble
         MEMS.setCurrentEnsembleId(memento.getEID());
     } 
 }

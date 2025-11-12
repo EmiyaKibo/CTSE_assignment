@@ -41,19 +41,12 @@ public class JazzBandEnsemble extends Ensemble
 		if( m == null ) {
 			throw new IllegalArgumentException("Musician with ID " + musicianId + " does not exist");
 		}
-
-		System.out.print("Instrument (1 = pianist | 2 = saxophonist | 3 = drummer ):- ");
-		String roleInput = scanner.nextLine().trim();
-		if (roleInput.isEmpty()) {
-			throw new IllegalArgumentException("Instrument selection cannot be empty");
-		}
-		newRole = Integer.parseInt(roleInput);
-
-		if (newRole == PIANIST_ROLE || newRole == SAXOPHONIST_ROLE || newRole == DRUMMER_ROLE)
+		
+		int currentRole = m.getRole();
+		if (currentRole == PIANIST_ROLE || currentRole == SAXOPHONIST_ROLE || currentRole == DRUMMER_ROLE)
 		{
-			m.setRole(newRole);
 			String roleName = "";
-			switch (newRole) 
+			switch (currentRole) 
 			{
 				case PIANIST_ROLE:
 					roleName = "pianist";
@@ -65,8 +58,20 @@ public class JazzBandEnsemble extends Ensemble
 					roleName = "drummer";
 					break;
 			}
+			MusicianCaretaker.createMemento(m, roleName);
+		}
+		
+		System.out.print("Instrument (1 = pianist | 2 = saxophonist | 3 = drummer ):- ");
+		String roleInput = scanner.nextLine().trim();
+		if (roleInput.isEmpty()) {
+			throw new IllegalArgumentException("Instrument selection cannot be empty");
+		}
+		newRole = Integer.parseInt(roleInput);
+
+		if (newRole == PIANIST_ROLE || newRole == SAXOPHONIST_ROLE || newRole == DRUMMER_ROLE)
+		{
+			m.setRole(newRole);
 			System.out.println("Instrument is updated.");
-			MEMS.setLastModifiedMusician(m, roleName);
 		}
 		else
 		{
@@ -94,7 +99,7 @@ public class JazzBandEnsemble extends Ensemble
 		}
 		if (!hasPianist)
 		{
-			System.out.println("NIL");
+			System.out.println("NLI");
 		}
 		
 		// Display saxophonists
