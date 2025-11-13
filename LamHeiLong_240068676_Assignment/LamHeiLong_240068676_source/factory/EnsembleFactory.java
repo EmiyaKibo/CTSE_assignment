@@ -8,6 +8,6 @@
  */
 public interface EnsembleFactory
 {
-	Ensemble createEnsemble(String eID);  // Create a new ensemble
-	String getEnsembleType();              // Get the type name (e.g., "orchestra")
+	public Ensemble createEnsemble(String eID);  // Create a new ensemble
+	public String getEnsembleType();              // Get the type name (e.g., "orchestra")
 }

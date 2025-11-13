@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -25,7 +28,12 @@ public class SwitchEnsembleCommand implements Command
 	{
 		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
 		Ensemble ensemble = ensembles.get(MEMS.getCurrentEnsembleId());
-		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
+		List<Musician> musicianList = new ArrayList<>();
+		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
+		while (musiciansBeforeUndo.hasNext()) {
+			musicianList.add(musiciansBeforeUndo.next());
+		}
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
 		ensemble = ensembles.get(ensembleId);
 
 		if (ensemble == null)

@@ -73,8 +73,7 @@ public class MEMS
 	}
 	
 	// Initialize all available commands
-	// To add a new command, just add a new entry here!
-	// ALL commands use the Command pattern (assignment requirement)
+	// ALL commands use the Command pattern
 	private void initializeCommands()
 	{
 		// Commands that modify state (undoable) - go into history
@@ -108,6 +107,12 @@ public class MEMS
 		// Utility commands
 		availableCommands.add(new CommandEntry(
 			new ExitCommandFactory(), false, false, "quit", "exit system", "x"));
+	}
+
+	// To add a new command, just call this method!
+	public void addNewCommand(CommandEntry newCommand)
+	{
+		availableCommands.add(newCommand);
 	}
 	
 	// Main loop - displays menu once, then processes commands until user exits
@@ -207,7 +212,8 @@ public class MEMS
 			} catch (NullPointerException e) {
 				System.out.println("Error: Invalid selection or missing data.");
 				if (e.getMessage() != null && !e.getMessage().isEmpty()) {
-					System.out.println("Details: " + e.getMessage());
+					System.out.println("Details: ");
+					e.printStackTrace();
 				}
 				System.out.println("Please try again.\n");
 				// Auto-retry - loop continues

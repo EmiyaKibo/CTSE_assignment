@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -5,6 +8,7 @@ public class ModifyMusicianInstrumentCommand implements Command
 {
 	private String ensembleId;
 	private MusicianMemento memento;	// Memento of the last modified musician, use for description
+	boolean hasUndo = false;
 	
 	public ModifyMusicianInstrumentCommand()
 	{
@@ -30,8 +34,30 @@ public class ModifyMusicianInstrumentCommand implements Command
 		if (ensemble == null) {
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
+
 		
-		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
+		
+		if(hasUndo) 
+		{
+			System.out.println("Restoring role from last undo.");
+			EnsembleCaretaker.restoreMemento();
+			hasUndo = false;
+			List<Musician> musicianList = new ArrayList<>();
+			Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
+			while (musiciansBeforeUndo.hasNext()) 
+			{
+				musicianList.add(musiciansBeforeUndo.next());
+			}
+			EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
+			return true;
+		}
+	
+		List<Musician> musicianList = new ArrayList<>();
+		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
+		while (musiciansBeforeUndo.hasNext()) {
+			musicianList.add(musiciansBeforeUndo.next());
+		}
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
 
 		ensemble.updateMusicianRole();
 		this.memento = MusicianCaretaker.popMemento();
@@ -41,13 +67,26 @@ public class ModifyMusicianInstrumentCommand implements Command
 	
 	public boolean undo()
 	{
+		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
+		Ensemble ensemble = ensembles.get(ensembleId);
+		
+		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
+		List<Musician> musicianList = new ArrayList<>();
+		while (musiciansBeforeUndo.hasNext()) {
+			musicianList.add(musiciansBeforeUndo.next());
+		}
+
 		EnsembleCaretaker.restoreMemento();
+		
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
+
+		hasUndo = true;
 		return true;
 	}
 	
 	public String getDescription()
 	{
 
-		return String.format("Modify musician's instrument, %s, %s", memento.getMID(), memento.getRoleName());
+		return String.format("Modify musician's instrument, %s, original role: %s", memento.getMID(), memento.getRoleName());
 	}
 }

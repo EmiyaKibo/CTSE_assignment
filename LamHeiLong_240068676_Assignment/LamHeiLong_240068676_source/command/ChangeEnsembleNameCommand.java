@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -32,7 +35,12 @@ public class ChangeEnsembleNameCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 		
-		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), ensemble.getMusicians(), ensemble.getName());
+		List<Musician> musicianList = new ArrayList<>();
+		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
+		while (musiciansBeforeUndo.hasNext()) {
+			musicianList.add(musiciansBeforeUndo.next());
+		}
+		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
 		ensemble.setName(newName);
 		System.out.println("Ensemble's name is updated.");
 		return true;

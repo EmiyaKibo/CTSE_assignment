@@ -1,19 +1,21 @@
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 public class EnsembleCaretaker 
 {
     private static Stack<EnsembleMemento> mementoStack = new Stack<EnsembleMemento>();
     // Memento pattern methods - for undo/redo functionality
 	// Save current state
-	public static void createMemento(String Id, Iterator<Musician> musicians, String eName)
+	public static synchronized void createMemento(String Id, List<Musician> musicians, String eName)
 	{
-		mementoStack.push(new EnsembleMemento(Id, musicians, eName));
+ 		mementoStack.push(new EnsembleMemento(Id, musicians.iterator(), eName));
 	}
 	
 	// Restore previous state
-	public static void restoreMemento()
+	public static synchronized void restoreMemento()
     {
         // Clear current musicians and restore from memento
         // This replaces the current state with the saved state
@@ -27,7 +29,7 @@ public class EnsembleCaretaker
         Ensemble ensembleToRestore = ensembles.get(memento.getEID()); 
 
         //collect all current musicians into a list to avoid ConcurrentModificationException
-        java.util.List<Musician> currentMusicians = new java.util.ArrayList<>();
+        List<Musician> currentMusicians = new ArrayList<>();
         Iterator<Musician> it = ensembleToRestore.getMusicians();
         while (it.hasNext())
         {

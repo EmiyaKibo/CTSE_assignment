@@ -8,8 +8,8 @@
  */
 public interface MusicianFactory
 {
-	Musician createMusician(String mID, String name, int role);  // Create musician with validation
-	boolean isValidRole(int role);                                // Check if role is valid
-	String getRoleName(int role);                                 // Get role name for display
-	String getRolePrompt();                                       // Get prompt for role selection (OCP)
+	public Musician createMusician(String mID, String name, int role);  // Create musician with validation
+	public boolean isValidRole(int role);                                // Check if role is valid
+	public String getRoleName(int role);                                 // Get role name for display
+	public String getRolePrompt();                                       // Get prompt for role selection (OCP)
 }
