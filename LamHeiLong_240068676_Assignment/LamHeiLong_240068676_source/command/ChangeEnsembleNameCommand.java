@@ -48,7 +48,23 @@ public class ChangeEnsembleNameCommand implements Command
 	
 	public boolean undo()
 	{
+		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
+		Map<String, Musician> musicians = MEMS.getMusicians();
+		
+		// Restore the ensemble state (this restores name and musicians list)
 		EnsembleCaretaker.restoreMemento();
+		
+		// After restoring, sync the global musicians map with the ensemble's musicians
+		Ensemble ensemble = ensembles.get(ensembleId);
+		if (ensemble != null) {
+			Iterator<Musician> it = ensemble.getMusicians();
+			while (it.hasNext()) {
+				Musician m = it.next();
+				// Ensure all musicians in the ensemble are in the global map
+				musicians.put(m.getMID(), m);
+			}
+		}
+		
 		return true;
 	}
 	

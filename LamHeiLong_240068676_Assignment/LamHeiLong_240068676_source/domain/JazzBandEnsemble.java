@@ -42,6 +42,19 @@ public class JazzBandEnsemble extends Ensemble
 			throw new IllegalArgumentException("Musician with ID " + musicianId + " does not exist");
 		}
 		
+		// Check if the musician belongs to this ensemble
+		boolean isInEnsemble = false;
+		Iterator<Musician> it = getMusicians();
+		while (it.hasNext()) {
+			if (it.next().getMID().equals(musicianId)) {
+				isInEnsemble = true;
+				break;
+			}
+		}
+		if (!isInEnsemble) {
+			throw new IllegalArgumentException("Musician " + musicianId + " is not in this ensemble");
+		}
+		
 		int currentRole = m.getRole();
 		if (currentRole == PIANIST_ROLE || currentRole == SAXOPHONIST_ROLE || currentRole == DRUMMER_ROLE)
 		{

@@ -46,6 +46,7 @@ public class EnsembleCaretaker
         for (Musician m : memento.getMusicians())
         {
             ensembleToRestore.addMusician(m);
+            System.out.println("Restored musician: " + m.getName());
         }
         ensembleToRestore.setName(memento.getName());
 

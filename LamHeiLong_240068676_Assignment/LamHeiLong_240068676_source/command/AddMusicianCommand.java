@@ -92,7 +92,29 @@ public class AddMusicianCommand implements Command
 	
 	public boolean undo()
 	{
-		EnsembleCaretaker.restoreMemento();		
+		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
+		Map<String, Musician> musicians = MEMS.getMusicians();
+		
+		// Get the ensemble before restoring
+		Ensemble ensemble = ensembles.get(ensembleId);
+		
+		// Restore the ensemble state (removes the added musician from ensemble)
+		EnsembleCaretaker.restoreMemento();
+		
+		// Also remove the musician from the global musicians map
+		if (ensemble != null) {
+			// Remove any musicians from global map that are not in the restored ensemble
+			Iterator<Musician> it = ensemble.getMusicians();
+			List<String> restoredMusicianIds = new ArrayList<>();
+			while (it.hasNext()) {
+				restoredMusicianIds.add(it.next().getMID());
+			}
+			// Remove the musician that was added (not in the restored list)
+			if (!restoredMusicianIds.contains(musician.getMID())) {
+				musicians.remove(musician.getMID());
+			}
+		}
+		
 		return true;
 	}
 	

@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -9,6 +6,7 @@ import java.util.Scanner;
  */
 public class SwitchEnsembleCommand implements Command
 {
+	private String previousEnsembleId;
 	private String ensembleId;
 	
 	public SwitchEnsembleCommand()
@@ -26,20 +24,14 @@ public class SwitchEnsembleCommand implements Command
 	
 	public boolean execute()
 	{
+		this.previousEnsembleId = MEMS.getCurrentEnsembleId();
 		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		Ensemble ensemble = ensembles.get(MEMS.getCurrentEnsembleId());
-		List<Musician> musicianList = new ArrayList<>();
-		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
-		while (musiciansBeforeUndo.hasNext()) {
-			musicianList.add(musiciansBeforeUndo.next());
-		}
-		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
-		ensemble = ensembles.get(ensembleId);
+		Ensemble ensemble = ensembles.get(ensembleId);
 
 		if (ensemble == null)
 		{
 			System.out.println("Ensemble " + ensembleId + " is not found!!");
-			return false;
+			throw new IllegalArgumentException("Ensemble ID '" + ensembleId + "' does not exist!");
 		}
 		MEMS.setCurrentEnsembleId(ensembleId);
 		return true;
@@ -47,7 +39,7 @@ public class SwitchEnsembleCommand implements Command
 	
 	public boolean undo()
 	{
-		EnsembleCaretaker.restoreMemento();
+		MEMS.setCurrentEnsembleId(previousEnsembleId);
 		return true;
 	}
 	

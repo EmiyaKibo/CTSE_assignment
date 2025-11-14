@@ -35,23 +35,42 @@ public class DeleteMusicianCommand implements Command
         if (ensemble == null) {
             throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
         }
-        
-        List<Musician> musicianList = new ArrayList<>();
-        Iterator<Musician> musiciansBeforeExecute = ensemble.getMusicians();
-        while (musiciansBeforeExecute.hasNext()) {
-            musicianList.add(musiciansBeforeExecute.next());
-        }
-        EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
-        
-        Musician musician = musicians.get(musicianId);
-        if (musician != null)
+
+        if (!musicians.containsKey(musicianId)) 
         {
-            ensemble.dropMusician(musician);
-            musicians.remove(musicianId);
-            System.out.println("Musician is deleted.");
-            return true;
+            throw new IllegalArgumentException("Musician ID '" + musicianId + "' does not exist!");
         }
-        return false;
+
+        Iterator<Musician> it = ensemble.getMusicians();
+
+        while (it.hasNext()) {
+            Musician m = it.next();
+            if (m.getMID().equals(musicianId)) 
+            {
+                // Save state BEFORE deletion - create memento before any modifications
+                List<Musician> musicianList = new ArrayList<>();
+                Iterator<Musician> musiciansBeforeExecute = ensemble.getMusicians();
+                while (musiciansBeforeExecute.hasNext()) 
+                {
+                    musicianList.add(musiciansBeforeExecute.next());
+                }
+
+                EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
+                
+                // Now perform the deletion
+                Musician musician = musicians.get(musicianId);
+                if (musician != null)
+                {
+                    musicians.remove(musicianId);
+                    ensemble.dropMusician(musician);
+                    System.out.println("Musician is deleted.");
+                    return true;
+                }
+                break;
+            }
+        }
+
+        throw new IllegalArgumentException("Musician ID '" + musicianId + "' does not exist in the current ensemble!");
     }
     
     public boolean undo()
@@ -62,16 +81,14 @@ public class DeleteMusicianCommand implements Command
         // Restore the ensemble state (this adds musicians back to ensemble)
         EnsembleCaretaker.restoreMemento();
         
-        // Also restore the deleted musician to the global musicians map
+        // After restoring, get the ensemble and re-add all musicians to the global musicians map
         Ensemble ensemble = ensembles.get(ensembleId);
         if (ensemble != null) {
             Iterator<Musician> it = ensemble.getMusicians();
             while (it.hasNext()) {
                 Musician m = it.next();
-                // Re-add all musicians from restored ensemble to global map
-                if (!musicians.containsKey(m.getMID())) {
-                    musicians.put(m.getMID(), m);
-                }
+                // Add musician back to global map
+                musicians.put(m.getMID(), m);
             }
         }
         

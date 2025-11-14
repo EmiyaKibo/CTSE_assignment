@@ -35,8 +35,6 @@ public class ModifyMusicianInstrumentCommand implements Command
 			throw new IllegalStateException("Ensemble " + ensembleId + " no longer exists!");
 		}
 
-		
-		
 		if(hasUndo) 
 		{
 			System.out.println("Restoring role from last undo.");
@@ -68,17 +66,21 @@ public class ModifyMusicianInstrumentCommand implements Command
 	public boolean undo()
 	{
 		Map<String, Ensemble> ensembles = MEMS.getEnsembles();
-		Ensemble ensemble = ensembles.get(ensembleId);
+		Map<String, Musician> musicians = MEMS.getMusicians();
 		
-		Iterator<Musician> musiciansBeforeUndo = ensemble.getMusicians();
-		List<Musician> musicianList = new ArrayList<>();
-		while (musiciansBeforeUndo.hasNext()) {
-			musicianList.add(musiciansBeforeUndo.next());
-		}
-
+		// Restore the ensemble state (restores musicians with old roles)
 		EnsembleCaretaker.restoreMemento();
 		
-		EnsembleCaretaker.createMemento(ensemble.getEnsembleID(), musicianList, ensemble.getName());
+		// After restoring, sync the global musicians map with the ensemble's musicians
+		Ensemble ensemble = ensembles.get(ensembleId);
+		if (ensemble != null) {
+			Iterator<Musician> it = ensemble.getMusicians();
+			while (it.hasNext()) {
+				Musician m = it.next();
+				// Ensure all musicians in the ensemble are in the global map
+				musicians.put(m.getMID(), m);
+			}
+		}
 
 		hasUndo = true;
 		return true;
